@@ -2,21 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
+import { BrowserRouter as Router } from 'react-router-dom'; // Ensure this is imported
 import reportWebVitals from './reportWebVitals';
-import './styles/globals.css'
-import { library } from "@fortawesome/fontawesome-svg-core";
-import { faFacebook, faTwitter, faLinkedin, faInstagram } from "@fortawesome/free-brands-svg-icons";
-
-library.add(faFacebook, faTwitter, faLinkedin, faInstagram);
+import './styles/globals.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <Router> {/* Only one Router here */}
+      <App />
+    </Router>
   </React.StrictMode>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

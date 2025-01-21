@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -12,19 +12,28 @@ import './App.css';
 import "./styles/globals.css";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token); // Set isLoggedIn based on token presence
+  }, []);
+
   return (
-    <Router>
-      <Navbar />
+    <>
+      {/* Hide Navbar on Home, Login, and Signup pages */}
+      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/' && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/budget" element={<Budget />} />
+        <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="/transactions" element={isLoggedIn ? <Transactions /> : <Navigate to="/login" />} />
+        <Route path="/budget" element={isLoggedIn ? <Budget /> : <Navigate to="/login" />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
-    </Router>
+    </>
   );
 }
 

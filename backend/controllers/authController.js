@@ -1,8 +1,13 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 exports.signUp = async(req,res) =>{
     const {name,email,password} = req.body;
+
+    if(!name || !email || !password){
+        return res.status(400).json({msg: "All fields are required!"});
+    }
     try{
         let user = await User.findOne({email});
         if(user){
@@ -33,7 +38,10 @@ exports.login = async(req,res) =>{
             return res.status(400).json({msg: "Invalid password"});
         }
        
+        const payload = {user: {id: user.id}};
+        const token = jwt.sign(payload, process.env.JWT, {expiresIn: '3h'});
         res.status(200).json({
+            token,
             msg:"User logging successfully",
             user: {name:user.name, email:user.email},
         });
