@@ -8,8 +8,11 @@ import Dashboard from "./components/Dashboard";
 import Transactions from "./components/Transactions";
 import Budget from "./components/Budget";
 import NotFound from "./pages/NotFound";
-import './App.css';
+import Footer from './components/Footer';
+import './App.css'; // Ensure this file contains the background image styles
 import "./styles/globals.css";
+import FinancialReport from "./components/FinancialReport";
+import backgroundImage from './assets/images/abstract-financial-chart-with-uptrend-line-graph-and-numbers-in-stock-market-on-gradient-white-color-background-vector.jpg';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -21,7 +24,8 @@ function App() {
   }, []);
 
   return (
-    <>
+    <div className="app-background"
+    style={{ backgroundImage: `url(${backgroundImage})` }}> {/* Apply the background class here */}
       {/* Hide Navbar on Home, Login, and Signup pages */}
       {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/' && <Navbar />}
       <Routes>
@@ -31,9 +35,11 @@ function App() {
         <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/transactions" element={isLoggedIn ? <Transactions /> : <Navigate to="/login" />} />
         <Route path="/budget" element={isLoggedIn ? <Budget /> : <Navigate to="/login" />} />
+        <Route path="/financial-report" element={isLoggedIn ? <FinancialReport /> : <Navigate to="/login" />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
-    </>
+      <Footer />
+    </div>
   );
 }
 

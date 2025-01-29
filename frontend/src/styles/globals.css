@@ -3,9 +3,20 @@
 @tailwind utilities;
 
 body {
+    margin: 0;
     font-family: 'Inter', sans-serif;
+    
 }
 
 .nav-gradient {
     background-color: linear-gradient(to right, #6a11cb, #2575fc);
 }
+
+body .app-background {
+    background-image: url('../assets/images/abstract-financial-chart-with-uptrend-line-graph-and-numbers-in-stock-market-on-gradient-white-color-background-vector.jpg'); /* Update the path to your image */
+    background-size: cover; /* Cover the entire area */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent repeating */
+    min-height: 100vh; /* Ensure it covers the full height */
+    padding: 20px;
+  }

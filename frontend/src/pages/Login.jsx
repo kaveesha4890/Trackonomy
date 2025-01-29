@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-const Login = () => {
+const Login = ({ setIsLoggedIn }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -16,21 +15,15 @@ const Login = () => {
         securityAnswer: "blue",
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        try{
-            const response = await axios.post("http://localhost:5000/api/auth/login",{
-                email,
-                password
-            });
-            const {token} = response.data;
-            localStorage.setItem('token',token);
-            console.log("User logged in successfully: ", response.data);
-            alert("User Logged in successfully!");
+        if (email === validCredentials.email && password === validCredentials.password) {
+            localStorage.setItem("token", "dummy-token");
+            alert("Login successful!");
+            setIsLoggedIn(true);
             navigate("/dashboard");
-        }catch(error){
-            console.error("Error during login:", error);
-            alert("An error occured.Please try again later");
+        } else {
+            alert("Invalid email or password. Please try again.");
         }
     };
 
