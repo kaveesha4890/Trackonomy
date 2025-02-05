@@ -12,6 +12,11 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
             }
         }
+        stage('Login to Docker Hub') {
+            steps {
+                sh "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
+            }
+        }
 
         stage('Build Docker Images') {
             steps {
