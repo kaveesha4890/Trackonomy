@@ -1,0 +1,28 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: server_container
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    # environment:
+    #   - MONGOURL=`${MONGOURL} `     
+    env_file: "./backend/.env" 
+
+  frontend:
+    build: ./frontend
+    container_name: client_container
+    ports: 
+      - "3000:3000"    
+    depends_on:
+      - backend
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules    
+
+  

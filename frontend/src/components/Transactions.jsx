@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const Transactions = () => {
     const [incomeTransactions, setIncomeTransactions] = useState([]);
@@ -15,50 +16,58 @@ const Transactions = () => {
     });
 
     useEffect(() => {
-        const savedIncomeTransactions = JSON.parse(localStorage.getItem("incomeTransactions")) || [];
-        const savedExpenseTransactions = JSON.parse(localStorage.getItem("expenseTransactions")) || [];
-        setIncomeTransactions(savedIncomeTransactions);
-        setExpenseTransactions(savedExpenseTransactions);
+        const fetchTransactions = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const config = { headers: { "x-auth-token": token } };
+                
+                const incomeRes = await axios.get("http://localhost:5000/api/transactions/income", config);
+                const expenseRes = await axios.get("http://localhost:5000/api/transactions/expense", config);
+                
+                setIncomeTransactions(incomeRes.data);
+                setExpenseTransactions(expenseRes.data);
+            } catch (error) {
+                console.error("Error fetching transactions", error);
+            }
+        };
+
+        fetchTransactions();
     }, []);
 
-    const handleAddIncome = (e) => {
+    const handleAddIncome = async(e) => {
         e.preventDefault();
         if (!newIncome.description || !newIncome.amount) {
             alert("Please fill in all fields.");
             return;
         }
 
-        const updatedIncome = {
-            id: incomeTransactions.length + 1,
-            ...newIncome,
-            amount: parseFloat(newIncome.amount),
-            date: new Date().toISOString().split("T")[0],
-        };
-
-        const updatedIncomeTransactions = [...incomeTransactions, updatedIncome];
-        setIncomeTransactions(updatedIncomeTransactions);
-        localStorage.setItem("incomeTransactions", JSON.stringify(updatedIncomeTransactions));
-        setNewIncome({ description: "", amount: "", category: "Income" });
+        try {
+            const token = localStorage.getItem("token");
+            const config = { headers: { "x-auth-token": token } };
+            const response = await axios.post("http://localhost:5000/api/transactions/income", newIncome, config);
+            setIncomeTransactions([...incomeTransactions, response.data]);
+            setNewIncome({ description: "", amount: "", category: "Income" });
+        } catch (error) {
+            console.error("Error adding income", error);
+        }
     };
 
-    const handleAddExpense = (e) => {
+    const handleAddExpense = async(e) => {
         e.preventDefault();
         if (!newExpense.description || !newExpense.amount) {
             alert("Please fill in all fields.");
             return;
         }
 
-        const updatedExpense = {
-            id: expenseTransactions.length + 1,
-            ...newExpense,
-            amount: parseFloat(newExpense.amount),
-            date: new Date().toISOString().split("T")[0],
-        };
-
-        const updatedExpenseTransactions = [...expenseTransactions, updatedExpense];
-        setExpenseTransactions(updatedExpenseTransactions);
-        localStorage.setItem("expenseTransactions", JSON.stringify(updatedExpenseTransactions));
-        setNewExpense({ description: "", amount: "", category: "Expenses" });
+        try {
+            const token = localStorage.getItem("token");
+            const config = { headers: { "x-auth-token": token } };
+            const response = await axios.post("http://localhost:5000/api/transactions/expense", newExpense, config);
+            setExpenseTransactions([...expenseTransactions, response.data]);
+            setNewExpense({ description: "", amount: "", category: "Expenses" });
+        } catch (error) {
+            console.error("Error adding expense", error);
+        }
     };
 
     return (
@@ -91,7 +100,7 @@ const Transactions = () => {
                             <option value="Income">Income</option>
                             <option value="Salary">Salary</option>
                             <option value="Bonus">Bonus</option>
-                            <option value="Other">Other</option>
+                            <option value="Other Income">Other Income</option>
                         </select>
                     </div>
                     <button
@@ -128,7 +137,7 @@ const Transactions = () => {
                             <option value="Food">Food</option>
                             <option value="Bills">Bills</option>
                             <option value="Entertainment">Entertainment</option>
-                            <option value="Other">Other</option>
+                            <option value="Other Expenses">Other Expenses</option>
                         </select>
                     </div>
                     <button

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar } from "react-chartjs-2";
+import axios from "axios";
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -12,15 +13,39 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const Dashboard = () => {
-    const income = 5000;
-    const expenses = 3000;
-    const savings = 2000;
+    const [income, setIncome] = useState(0);
+    const [expenses, setExpenses] = useState(0);
+    const [savings, setSavings] = useState(0);
+    const [recentTransactions, setRecentTransactions] = useState([]);
+    const incomeCategories = ["Income","Salary","Bonus","Other Income"];
+    //const expenseCategories = ["Expenses","Food","Entertainment","Bills","Other Expenses" ];
 
-    const recentTransactions = [
-        { id: 1, description: "Salary", amount: 4000, type: "Income", date: "2025-01-01" },
-        { id: 2, description: "Groceries", amount: -200, type: "Expense", date: "2025-01-02" },
-        { id: 3, description: "Utilities", amount: -150, type: "Expense", date: "2025-01-03" },
-    ];
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                const config = { headers: { "x-auth-token": token } };
+
+                const incomeRes = await axios.get("http://localhost:5000/api/transactions/income", config);
+                const expenseRes = await axios.get("http://localhost:5000/api/transactions/expense", config);
+
+                const totalIncome = incomeRes.data.reduce((sum, txn) => sum + txn.amount, 0);
+                const totalExpenses = expenseRes.data.reduce((sum, txn) => sum + txn.amount, 0);
+                setIncome(totalIncome);
+                setExpenses(totalExpenses);
+                setSavings(totalIncome - totalExpenses);
+                
+                // Combine transactions and sort by date (latest first)
+                const allTransactions = [...incomeRes.data, ...expenseRes.data].sort(
+                    (a, b) => new Date(b.date) - new Date(a.date)
+                );
+                setRecentTransactions(allTransactions.slice(0, 5));
+            } catch (error) {
+                console.error("Error fetching transactions", error);
+            }
+        };
+        fetchTransactions();
+    }, []);
 
     const chartData = {
         labels: ["Income", "Expenses", "Savings"],
@@ -63,39 +88,33 @@ const Dashboard = () => {
             <div className="bg-white p-6 rounded shadow">
                 <h2 className="text-xl font-bold mb-4">Recent Transactions</h2>
                 <ul className="divide-y divide-gray-200">
-                    {recentTransactions.map((transaction) => (
-                        <li
-                            key={transaction.id}
-                            className="py-4 flex justify-between items-center"
-                        >
-                            <div>
-                                <p className="font-semibold">{transaction.description}</p>
-                                <p className="text-sm text-gray-500">{transaction.date}</p>
-                            </div>
-                            <p
-                                className={`text-lg font-semibold ${
-                                    transaction.type === "Income"
-                                        ? "text-green-500"
-                                        : "text-red-500"
-                                }`}
+                    {recentTransactions.length === 0 ? (
+                        <p className="text-gray-500">No recent transactions found.</p>
+                    ) : (
+                        recentTransactions.map((transaction) => (
+                            <li
+                                key={transaction._id}
+                                className="py-4 flex justify-between items-center"
                             >
-                                {transaction.type === "Income" ? "+" : "-"}${Math.abs(
-                                    transaction.amount
-                                )}
-                            </p>
-                        </li>
-                    ))}
+                                <div>
+                                    <p className="font-semibold">{transaction.description}</p>
+                                    <p className="text-sm text-gray-500">{new Date(transaction.date).toLocaleDateString()}</p>
+                                </div>
+                                <p
+                                    className={`text-lg font-semibold ${
+                                        incomeCategories.includes(transaction.category)
+                                            ? "text-green-500"
+                                            : "text-red-500"
+                                    }`}
+                                >
+                                    {incomeCategories.includes(transaction.category)
+                                        ? `+$${transaction.amount}` 
+                                        : `-$${transaction.amount}`}
+                                </p>
+                            </li>
+                        ))
+                    )}
                 </ul>
-            </div>
-
-            {/* Call to Actions */}
-            <div className="mt-8 flex gap-4 justify-center">
-                <button className="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-700">
-                    Add Income
-                </button>
-                <button className="bg-red-500 text-white px-4 py-2 rounded shadow-md hover:bg-red-700">
-                    Add Expense
-                </button>
             </div>
         </div>
     );
