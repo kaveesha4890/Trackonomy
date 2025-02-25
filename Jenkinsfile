@@ -12,7 +12,7 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
             }
         }
-        /*
+        
         stage('Login to Docker Hub') {
             steps {
                 sh "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
@@ -33,18 +33,8 @@ pipeline {
                     bat "docker push kaveesha4890/mern-backend:latest"
                 }
             }
-        }*/
+        
 
-        stage('Build & Push Docker Images') {
-            steps {
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub-credentials') {
-                        docker.build("kaveesha4890/mern-frontend:latest", "./frontend").push()
-                        docker.build("kaveesha4890/mern-backend:latest", "./backend").push()
-                    }
-                }
-            }
-        }
 
         stage('Deploy') {
             steps {
