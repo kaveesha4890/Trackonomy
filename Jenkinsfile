@@ -15,14 +15,14 @@ pipeline {
         
         stage('Login to Docker Hub') {
             steps {
-                sh "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
+                bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
             }
         }
 
         stage('Build Docker Images') {
             steps {
-                sh "docker build -t kaveesha4890/mern-frontend:latest ./frontend"
-                sh "docker build -t kaveesha4890/mern-backend:latest ./backend"
+                bat "docker build -t kaveesha4890/mern-frontend:latest ./frontend"
+                bat "docker build -t kaveesha4890/mern-backend:latest ./backend"
             }
         }
 
@@ -31,9 +31,10 @@ pipeline {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
                     bat "docker push kaveesha4890/mern-frontend:latest"
                     bat "docker push kaveesha4890/mern-backend:latest"
+
                 }
             }
-        
+        }
 
 
         stage('Deploy') {
@@ -42,5 +43,6 @@ pipeline {
                 bat "docker-compose up -d"
             }
         }
+        
     }
 }
