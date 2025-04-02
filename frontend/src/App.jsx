@@ -10,6 +10,8 @@ import Budget from "./components/Budget";
 import NotFound from "./pages/NotFound";
 import './App.css';
 import "./styles/globals.css";
+import FinancialReport from "./components/FinancialReport";
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(()=> !!!localStorage.getItem("token"));
@@ -31,6 +33,7 @@ function App() {
         <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />
         <Route path="/transactions" element={isLoggedIn ? <Transactions /> : <Navigate to="/login" />} />
         <Route path="/budget" element={isLoggedIn ? <Budget /> : <Navigate to="/login" />} />
+        <Route path="/financial-report" element={isLoggedIn ? <FinancialReport /> : <Navigate to="/login" />} />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </>
