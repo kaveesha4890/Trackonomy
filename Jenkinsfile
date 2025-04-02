@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
+
                 git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
             }
         }
@@ -17,6 +18,11 @@ pipeline {
         stage('Login to Docker Hub') {
             steps {
                 bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
+
+                retry(3){
+                    git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
+                }
+
             }
         }
 
@@ -24,6 +30,12 @@ pipeline {
             steps {
                 bat "docker build -t kaveesha4890/mern-frontend:latest ./frontend"
                 bat "docker build -t kaveesha4890/mern-backend:latest ./backend"
+            }
+        }
+        
+        stage('Login to Docker Hub') {
+            steps {
+                bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
             }
         }
 
@@ -38,7 +50,9 @@ pipeline {
         }
 
 
+
         stage('Terraform Initialize and Deploy') {
+
             steps {
                 bat '''
                 cd terraform
