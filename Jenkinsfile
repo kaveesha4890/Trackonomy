@@ -33,11 +33,6 @@ pipeline {
             }
         }
         
-        stage('Login to Docker Hub') {
-            steps {
-                bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
-            }
-        }
 
         stage('Push to Docker Hub') {
             steps {
