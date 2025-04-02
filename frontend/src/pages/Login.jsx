@@ -16,10 +16,12 @@ const Login = () => {
         securityAnswer: "blue",
     };
 
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
     const handleSubmit = async(e) => {
         e.preventDefault();
         try{
-            const response = await axios.post("http://192.168.49.2:32001/api/auth/login",{
+            const response = await axios.post(`${API_URL}/api/auth/login`,{
                 email,
                 password
             });
