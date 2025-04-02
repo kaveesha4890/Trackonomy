@@ -17,38 +17,13 @@ const Login = () => {
         securityAnswer: "blue",
     };
 
-    // Initialize WebSocket connection on component mount
-    useEffect(() => {
-        const ws = new WebSocket("ws://192.168.49.2:32001/ws"); // Replace with your WebSocket URL
-        ws.onopen = () => {
-            console.log("WebSocket connected");
-        };
 
-        ws.onerror = (error) => {
-            console.error("WebSocket Error:", error);
-        };
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-        ws.onmessage = (event) => {
-            console.log("WebSocket message received:", event.data);
-            // Handle incoming WebSocket messages here
-        };
-
-        // Set the WebSocket in state
-        setSocket(ws);
-
-        // Cleanup the WebSocket connection when component unmounts
-        return () => {
-            if (ws) {
-                ws.close();
-                console.log("WebSocket closed");
-            }
-        };
-    }, []); // Empty dependency array ensures this runs only once
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-        try {
-            const response = await axios.post("http://192.168.49.2:32001/api/auth/login", {
+        try{
+            const response = await axios.post(`${API_URL}/api/auth/login`,{
                 email,
                 password,
             });
