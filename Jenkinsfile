@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_HUB_USER = credentials('docker-hub-credentials') 
         DOCKER_HUB_REPO = "kaveesha4890"
-        KUBECONFIG = credentials('kubernetes-kubeconfig')
+        KUBECONFIG = credentials('kubeconfig')
     }
 
     stages {
