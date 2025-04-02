@@ -2,8 +2,9 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HUB_USER = credentials('docker-hub-credentials') // Use the ID you created in Jenkins
+        DOCKER_HUB_USER = credentials('docker-hub-credentials') 
         DOCKER_HUB_REPO = "kaveesha4890"
+        KUBECONFIG = credentials('kubernetes-kubeconfig')
     }
 
     stages {
@@ -37,12 +38,17 @@ pipeline {
         }
 
 
-        stage('Deploy') {
+        stage('Terraform Initialize and Deploy') {
             steps {
-                bat "docker-compose down"
-                bat "docker-compose up -d"
+                bat '''
+                cd terraform
+                terraform init
+                terraform apply -auto-approve
+                '''
+                
             }
         }
-        
+
+ 
     }
 }
