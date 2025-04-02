@@ -19,7 +19,7 @@ const Login = () => {
     const handleSubmit = async(e) => {
         e.preventDefault();
         try{
-            const response = await axios.post("http://192.168.49.2:32001/api/auth/login",{
+            const response = await axios.post("http://127.0.0.1:56301/api/auth/login",{
                 email,
                 password
             });
