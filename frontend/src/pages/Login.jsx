@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -7,6 +7,7 @@ const Login = () => {
     const [password, setPassword] = useState("");
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const [securityAnswer, setSecurityAnswer] = useState("");
+    const [socket, setSocket] = useState(null); // State to store the WebSocket
     const navigate = useNavigate();
 
     const validCredentials = {
@@ -16,6 +17,7 @@ const Login = () => {
         securityAnswer: "blue",
     };
 
+
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
     const handleSubmit = async(e) => {
@@ -23,22 +25,31 @@ const Login = () => {
         try{
             const response = await axios.post(`${API_URL}/api/auth/login`,{
                 email,
-                password
+                password,
             });
-            const {token} = response.data;
-            localStorage.setItem('token',token);
-            console.log("User logged in successfully: ", response.data);
+            const { token } = response.data;
+            localStorage.setItem("token", token);
+            console.log("User logged in successfully:", response.data);
             alert("User Logged in successfully!");
+
+            // Send a message via WebSocket after login
+            if (socket && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({ type: "LOGIN", message: "User logged in" }));
+            }
+
             navigate("/dashboard");
-        }catch(error){
+        } catch (error) {
             console.error("Error during login:", error);
-            alert("An error occured.Please try again later");
+            alert("An error occurred. Please try again later.");
         }
     };
 
     const handleForgotPassword = (e) => {
         e.preventDefault();
-        if (email === validCredentials.email && securityAnswer.toLowerCase() === validCredentials.securityAnswer.toLowerCase()) {
+        if (
+            email === validCredentials.email &&
+            securityAnswer.toLowerCase() === validCredentials.securityAnswer.toLowerCase()
+        ) {
             alert("Password reset link has been sent to your email.");
             setShowForgotPassword(false);
         } else {
@@ -54,7 +65,7 @@ const Login = () => {
                     <form onSubmit={handleForgotPassword}>
                         <div className="mb-4">
                             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                            <input 
+                            <input
                                 type="email"
                                 placeholder="Enter your email"
                                 className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400"
