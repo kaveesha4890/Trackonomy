@@ -46,7 +46,7 @@ resource "kubernetes_deployment" "frontend" {
             container_port = 3000
           }
           env {
-            name = REACT_APP_API_URL
+            name = "REACT_APP_API_URL"
             value = "http://mern-backend-service:5000"
           }
         }
@@ -106,7 +106,7 @@ resource "kubernetes_deployment" "backend" {
             container_port = 5000
           }
           env {
-            name = MONGO_URI
+            name = "MONGO_URI"
             value = "mongodb+srv://kaveeshwijeguru:owdkmw1234@trackonomy.un8lm.mongodb.net/Trackonomy?retryWrites=true&w=majority&appName=trackonomy"
           }
         }
