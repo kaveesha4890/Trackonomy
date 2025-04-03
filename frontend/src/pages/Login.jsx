@@ -55,7 +55,7 @@ const Login = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-teal-400 to-blue-600">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-                <h2 className="text-3xl font-bold mb-6 text-red-800 text-center">Log In</h2>
+                <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Log In</h2>
                 {showForgotPassword ? (
                     <form onSubmit={handleForgotPassword}>
                         <div className="mb-4">
