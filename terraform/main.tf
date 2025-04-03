@@ -42,12 +42,13 @@ resource "kubernetes_deployment" "frontend" {
         container {
           image = "kaveesha4890/mern-frontend:latest"
           name  = "mern-frontend"
+          image_pull_policy = "Always"
           port {
             container_port = 3000
           }
           env {
             name = "REACT_APP_API_URL"
-            value = "http://mern-backend-service:5000"
+            value = "http://127.0.0.1:62794"
           }
         }
       }
@@ -102,6 +103,7 @@ resource "kubernetes_deployment" "backend" {
         container {
           image = "kaveesha4890/mern-backend:latest"
           name  = "mern-backend"
+          image_pull_policy = "Always"
           port {
             container_port = 5000
           }
