@@ -30,8 +30,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />
-        <Route path="/transactions" element={isLoggedIn ? <Transactions /> : <Navigate to="/login" />} />
+        {/*<Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />
+        *<Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />*/}
+        <Route path="/dashboard" element={<Dashboard /> }/>
+        <Route path="/transactions" element={<Transactions /> }/>
         <Route path="/budget" element={isLoggedIn ? <Budget /> : <Navigate to="/login" />} />
         <Route path="/financial-report" element={isLoggedIn ? <FinancialReport /> : <Navigate to="/login" />} />
         <Route path="/*" element={<NotFound />} />
