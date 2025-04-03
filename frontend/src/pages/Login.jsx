@@ -32,11 +32,6 @@ const Login = () => {
             console.log("User logged in successfully:", response.data);
             alert("User Logged in successfully!");
 
-            // Send a message via WebSocket after login
-            if (socket && socket.readyState === WebSocket.OPEN) {
-                socket.send(JSON.stringify({ type: "LOGIN", message: "User logged in" }));
-            }
-
             navigate("/dashboard");
         } catch (error) {
             console.error("Error during login:", error);
@@ -60,7 +55,7 @@ const Login = () => {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-teal-400 to-blue-600">
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-                <h2 className="text-3xl font-bold mb-6 text-gray-800 text-center">Log In</h2>
+                <h2 className="text-3xl font-bold mb-6 text-red-800 text-center">Log In</h2>
                 {showForgotPassword ? (
                     <form onSubmit={handleForgotPassword}>
                         <div className="mb-4">
