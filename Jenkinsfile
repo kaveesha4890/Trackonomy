@@ -4,25 +4,15 @@ pipeline {
     environment {
         DOCKER_HUB_USER = credentials('docker-hub-credentials') 
         DOCKER_HUB_REPO = "kaveesha4890"
-        KUBECONFIG = credentials('kubernetes-kubeconfig')
+        KUBECONFIG = credentials('kubeconfig')
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-
-                git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
-            }
-        }
-        
-        stage('Login to Docker Hub') {
-            steps {
-                bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
-
-                retry(3){
+                retry(3) {  // Ensure retrying Git clone in case of failure
                     git branch: 'main', url: 'https://github.com/kaveesha4890/Trackonomy.git'
                 }
-
             }
         }
 
@@ -32,37 +22,24 @@ pipeline {
                 bat "docker build -t kaveesha4890/mern-backend:latest ./backend"
             }
         }
-        
-        stage('Login to Docker Hub') {
-            steps {
-                bat "echo owdkmw1234 | docker login -u kaveesha4890 --password-stdin"
-            }
-        }
 
         stage('Push to Docker Hub') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
                     bat "docker push kaveesha4890/mern-frontend:latest"
                     bat "docker push kaveesha4890/mern-backend:latest"
-
                 }
             }
         }
 
-
-
         stage('Terraform Initialize and Deploy') {
-
             steps {
                 bat '''
                 cd terraform
                 terraform init
                 terraform apply -auto-approve
                 '''
-                
             }
         }
-
- 
     }
 }
