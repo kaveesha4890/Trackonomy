@@ -25,7 +25,7 @@ function App() {
   return (
     <>
       {/* Hide Navbar on Home, Login, and Signup pages */}
-      {location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/' && <Navbar />}
+      {/*{location.pathname !== '/login' && location.pathname !== '/signup' && location.pathname !== '/' && <Navbar />}*/}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
@@ -34,8 +34,8 @@ function App() {
         *<Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />} />*/}
         <Route path="/dashboard" element={<Dashboard /> }/>
         <Route path="/transactions" element={<Transactions /> }/>
-        <Route path="/budget" element={isLoggedIn ? <Budget /> : <Navigate to="/login" />} />
-        <Route path="/financial-report" element={isLoggedIn ? <FinancialReport /> : <Navigate to="/login" />} />
+        <Route path="/budget" element={<Budget />} />
+        <Route path="/financial-report" element={<FinancialReport /> } />
         <Route path="/*" element={<NotFound />} />
       </Routes>
     </>
